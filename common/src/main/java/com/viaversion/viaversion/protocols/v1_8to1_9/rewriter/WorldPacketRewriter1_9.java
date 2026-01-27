@@ -45,6 +45,7 @@ import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.CommandBlockProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.HandItemProvider;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandBlockPlaceProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.SwapHandsProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.ClientWorld1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.EntityTracker1_9;
@@ -378,7 +379,14 @@ public class WorldPacketRewriter1_9 {
                 map(Types.VAR_INT, Types.UNSIGNED_BYTE); // 1 - Block Face
                 handler(wrapper -> {
                     final int hand = wrapper.read(Types.VAR_INT); // 2 - Hand
-                    if (hand != 0) wrapper.cancel();
+                    if (hand != 0) {
+                        // Off-hand block placement - notify provider before cancelling
+                        final BlockPosition pos = wrapper.get(Types.BLOCK_POSITION1_8, 0);
+                        final int face = wrapper.get(Types.UNSIGNED_BYTE, 0);
+                        Via.getManager().getProviders().get(OffHandBlockPlaceProvider.class)
+                            .onOffHandBlockPlace(wrapper.user(), pos.x(), pos.y(), pos.z(), face);
+                        wrapper.cancel();
+                    }
                 });
                 handler(wrapper -> {
                     Item item = Via.getManager().getProviders().get(HandItemProvider.class).getHandItem(wrapper.user());

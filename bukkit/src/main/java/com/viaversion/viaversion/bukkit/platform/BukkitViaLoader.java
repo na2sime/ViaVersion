@@ -38,6 +38,8 @@ import com.viaversion.viaversion.bukkit.listeners.v1_8to1_9.PaperPatch;
 import com.viaversion.viaversion.bukkit.providers.BukkitAckSequenceProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitBlockConnectionProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitInventoryQuickMoveProvider;
+import com.viaversion.viaversion.bukkit.providers.BukkitOffHandBlockPlaceProvider;
+import com.viaversion.viaversion.bukkit.providers.BukkitOffHandSlotClickProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitPickItemProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitSwapHandsProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitViaMovementTransmitter;
@@ -48,6 +50,8 @@ import com.viaversion.viaversion.protocols.v1_18_2to1_19.provider.AckSequencePro
 import com.viaversion.viaversion.protocols.v1_21_2to1_21_4.provider.PickItemProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.HandItemProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.MovementTransmitterProvider;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandBlockPlaceProvider;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandSlotClickProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.SwapHandsProvider;
 import java.util.HashSet;
 import java.util.Set;
@@ -145,6 +149,8 @@ public class BukkitViaLoader implements ViaPlatformLoader {
         if (serverProtocolVersion.olderThan(ProtocolVersion.v1_9)) {
             Via.getManager().getProviders().use(MovementTransmitterProvider.class, new BukkitViaMovementTransmitter());
             Via.getManager().getProviders().use(SwapHandsProvider.class, new BukkitSwapHandsProvider());
+            Via.getManager().getProviders().use(OffHandBlockPlaceProvider.class, new BukkitOffHandBlockPlaceProvider());
+            Via.getManager().getProviders().use(OffHandSlotClickProvider.class, new BukkitOffHandSlotClickProvider());
 
             Via.getManager().getProviders().use(HandItemProvider.class, new HandItemProvider() {
                 @Override

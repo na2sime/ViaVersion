@@ -31,6 +31,7 @@ import com.viaversion.viaversion.protocols.v1_8to1_9.data.PotionIdMappings1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ClientboundPackets1_8;
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ClientboundPackets1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_9;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandSlotClickProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.EntityTracker1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.InventoryTracker;
 import com.viaversion.viaversion.rewriter.ItemRewriter;
@@ -297,6 +298,32 @@ public class ItemPacketRewriter1_9 extends ItemRewriter<ClientboundPackets1_8, S
                     }
 
                     handleItemToServer(wrapper.user(), stack);
+                });
+                // Off-hand slot click event
+                handler(wrapper -> {
+                    final byte windowID = wrapper.get(Types.BYTE, 0);
+                    final short slot = wrapper.get(Types.SHORT, 0);
+                    if (slot == 45 && windowID == 0) {
+                        final byte mode = wrapper.get(Types.BYTE, 2);
+                        final byte button = wrapper.get(Types.BYTE, 1);
+
+                        // Determine click type
+                        final OffHandSlotClickProvider.ClickType clickType;
+                        int hotbarButton = -1;
+                        if (mode == 0) {
+                            clickType = button == 0 ? OffHandSlotClickProvider.ClickType.LEFT : OffHandSlotClickProvider.ClickType.RIGHT;
+                        } else if (mode == 1) {
+                            clickType = button == 0 ? OffHandSlotClickProvider.ClickType.SHIFT_LEFT : OffHandSlotClickProvider.ClickType.SHIFT_RIGHT;
+                        } else if (mode == 2) {
+                            clickType = OffHandSlotClickProvider.ClickType.NUMBER_KEY;
+                            hotbarButton = button;
+                        } else {
+                            clickType = OffHandSlotClickProvider.ClickType.LEFT;
+                        }
+
+                        Via.getManager().getProviders().get(OffHandSlotClickProvider.class)
+                            .onOffHandSlotClick(wrapper.user(), clickType, hotbarButton);
+                    }
                 });
                 // Brewing patch and elytra throw patch
                 handler(wrapper -> {
