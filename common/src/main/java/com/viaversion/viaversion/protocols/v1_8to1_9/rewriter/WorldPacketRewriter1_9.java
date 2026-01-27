@@ -45,6 +45,7 @@ import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.CommandBlockProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.HandItemProvider;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.SwapHandsProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.ClientWorld1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.EntityTracker1_9;
 import com.viaversion.viaversion.util.ComponentUtil;
@@ -292,8 +293,11 @@ public class WorldPacketRewriter1_9 {
                 map(Types.BLOCK_POSITION1_8); // Position
                 handler(wrapper -> {
                     int status = wrapper.get(Types.VAR_INT, 0);
-                    if (status == 6)
+                    if (status == 6) {
+                        // Swap hands action - notify provider before cancelling
+                        Via.getManager().getProviders().get(SwapHandsProvider.class).onSwapHands(wrapper.user());
                         wrapper.cancel();
+                    }
                 });
                 // Blocking
                 handler(wrapper -> {

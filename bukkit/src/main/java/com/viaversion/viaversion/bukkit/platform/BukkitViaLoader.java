@@ -39,6 +39,7 @@ import com.viaversion.viaversion.bukkit.providers.BukkitAckSequenceProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitBlockConnectionProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitInventoryQuickMoveProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitPickItemProvider;
+import com.viaversion.viaversion.bukkit.providers.BukkitSwapHandsProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitViaMovementTransmitter;
 import com.viaversion.viaversion.protocols.v1_11_1to1_12.provider.InventoryQuickMoveProvider;
 import com.viaversion.viaversion.protocols.v1_12_2to1_13.blockconnections.ConnectionData;
@@ -47,6 +48,7 @@ import com.viaversion.viaversion.protocols.v1_18_2to1_19.provider.AckSequencePro
 import com.viaversion.viaversion.protocols.v1_21_2to1_21_4.provider.PickItemProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.HandItemProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.MovementTransmitterProvider;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.SwapHandsProvider;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -142,6 +144,7 @@ public class BukkitViaLoader implements ViaPlatformLoader {
         /* Providers */
         if (serverProtocolVersion.olderThan(ProtocolVersion.v1_9)) {
             Via.getManager().getProviders().use(MovementTransmitterProvider.class, new BukkitViaMovementTransmitter());
+            Via.getManager().getProviders().use(SwapHandsProvider.class, new BukkitSwapHandsProvider());
 
             Via.getManager().getProviders().use(HandItemProvider.class, new HandItemProvider() {
                 @Override
