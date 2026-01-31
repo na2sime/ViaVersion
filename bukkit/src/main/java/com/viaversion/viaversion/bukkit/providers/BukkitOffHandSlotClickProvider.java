@@ -32,15 +32,15 @@ import org.bukkit.entity.Player;
 public class BukkitOffHandSlotClickProvider extends OffHandSlotClickProvider {
 
     @Override
-    public void onOffHandSlotClick(final UserConnection connection, final ClickType clickType, final int hotbarButton) {
+    public boolean onOffHandSlotClick(final UserConnection connection, final ClickType clickType, final int hotbarButton) {
         final UUID playerUuid = connection.getProtocolInfo().getUuid();
         if (playerUuid == null) {
-            return;
+            return false;
         }
 
         final Player player = Bukkit.getPlayer(playerUuid);
         if (player == null) {
-            return;
+            return false;
         }
 
         // Convert ClickType
@@ -55,5 +55,6 @@ public class BukkitOffHandSlotClickProvider extends OffHandSlotClickProvider {
         // Fire the event asynchronously since we're on the netty thread
         final PlayerOffHandSlotClickEvent event = new PlayerOffHandSlotClickEvent(player, bukkitClickType, hotbarButton);
         Bukkit.getPluginManager().callEvent(event);
+        return event.isCancelled();
     }
 }

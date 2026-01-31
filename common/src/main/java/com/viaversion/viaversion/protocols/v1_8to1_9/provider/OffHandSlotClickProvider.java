@@ -44,7 +44,8 @@ public class OffHandSlotClickProvider implements Provider {
      * @param clickType    the type of click performed
      * @param hotbarButton the hotbar button (0-8) if clickType is NUMBER_KEY, otherwise -1
      */
-    public void onOffHandSlotClick(final UserConnection connection, final ClickType clickType, final int hotbarButton) {
+    public boolean onOffHandSlotClick(final UserConnection connection, final ClickType clickType, final int hotbarButton) {
         // Default implementation does nothing - platform implementations override this
+        return false;
     }
 }

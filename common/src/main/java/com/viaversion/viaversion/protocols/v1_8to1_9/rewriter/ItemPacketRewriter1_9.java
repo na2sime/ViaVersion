@@ -322,8 +322,11 @@ public class ItemPacketRewriter1_9 extends ItemRewriter<ClientboundPackets1_8, S
                             clickType = OffHandSlotClickProvider.ClickType.LEFT;
                         }
 
-                        Via.getManager().getProviders().get(OffHandSlotClickProvider.class)
-                            .onOffHandSlotClick(wrapper.user(), clickType, hotbarButton);
+                        if (Via.getManager().getProviders().get(OffHandSlotClickProvider.class)
+                            .onOffHandSlotClick(wrapper.user(), clickType, hotbarButton)) {
+                            wrapper.cancel();
+                            return;
+                        }
                     }
                 });
                 // Off-hand slot drag event (mode 5 = dragging, add-slot phase)
