@@ -40,6 +40,7 @@ import com.viaversion.viaversion.bukkit.providers.BukkitBlockConnectionProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitInventoryQuickMoveProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitOffHandBlockPlaceProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitOffHandSlotClickProvider;
+import com.viaversion.viaversion.bukkit.providers.BukkitOffHandSlotDragProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitPickItemProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitSwapHandsProvider;
 import com.viaversion.viaversion.bukkit.providers.BukkitViaMovementTransmitter;
@@ -52,6 +53,7 @@ import com.viaversion.viaversion.protocols.v1_8to1_9.provider.HandItemProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.MovementTransmitterProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandBlockPlaceProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandSlotClickProvider;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandSlotDragProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.SwapHandsProvider;
 import java.util.HashSet;
 import java.util.Set;
@@ -151,6 +153,7 @@ public class BukkitViaLoader implements ViaPlatformLoader {
             Via.getManager().getProviders().use(SwapHandsProvider.class, new BukkitSwapHandsProvider());
             Via.getManager().getProviders().use(OffHandBlockPlaceProvider.class, new BukkitOffHandBlockPlaceProvider());
             Via.getManager().getProviders().use(OffHandSlotClickProvider.class, new BukkitOffHandSlotClickProvider());
+            Via.getManager().getProviders().use(OffHandSlotDragProvider.class, new BukkitOffHandSlotDragProvider());
 
             Via.getManager().getProviders().use(HandItemProvider.class, new HandItemProvider() {
                 @Override

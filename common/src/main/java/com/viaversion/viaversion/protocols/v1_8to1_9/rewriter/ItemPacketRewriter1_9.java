@@ -32,6 +32,7 @@ import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ClientboundPackets1_
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ClientboundPackets1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandSlotClickProvider;
+import com.viaversion.viaversion.protocols.v1_8to1_9.provider.OffHandSlotDragProvider;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.EntityTracker1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.storage.InventoryTracker;
 import com.viaversion.viaversion.rewriter.ItemRewriter;
@@ -323,6 +324,31 @@ public class ItemPacketRewriter1_9 extends ItemRewriter<ClientboundPackets1_8, S
 
                         Via.getManager().getProviders().get(OffHandSlotClickProvider.class)
                             .onOffHandSlotClick(wrapper.user(), clickType, hotbarButton);
+                    }
+                });
+                // Off-hand slot drag event (mode 5 = dragging, add-slot phase)
+                handler(wrapper -> {
+                    final byte windowID = wrapper.get(Types.BYTE, 0);
+                    final short slot = wrapper.get(Types.SHORT, 0);
+                    final byte mode = wrapper.get(Types.BYTE, 2);
+                    final byte button = wrapper.get(Types.BYTE, 1);
+                    if (mode == 5 && slot == 45 && windowID == 0 && (button == 1 || button == 5 || button == 9)) {
+                        // This is an add-slot packet for slot 45 during a drag
+                        final OffHandSlotDragProvider.DragType dragType;
+                        if (button == 1) {
+                            dragType = OffHandSlotDragProvider.DragType.LEFT;
+                        } else if (button == 5) {
+                            dragType = OffHandSlotDragProvider.DragType.RIGHT;
+                        } else {
+                            dragType = OffHandSlotDragProvider.DragType.MIDDLE;
+                        }
+                        final Item cursorItem = wrapper.get(Types.ITEM1_8, 0);
+                        final boolean cancelled = Via.getManager().getProviders().get(OffHandSlotDragProvider.class)
+                            .onOffHandSlotDrag(wrapper.user(), dragType, cursorItem);
+                        if (cancelled) {
+                            wrapper.cancel();
+                            return;
+                        }
                     }
                 });
                 // Brewing patch and elytra throw patch
